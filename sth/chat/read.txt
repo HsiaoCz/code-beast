@@ -1,0 +1,7 @@
+chrome:
+
+consloe
+
+let socket = new WebSocket("ws://192.168.206.1:9001/ws")
+socket.onmessage=(event)=>{console.log("recevied from the server:",event.data)}
+socket.send("hello form the client chrome my man what's up")
