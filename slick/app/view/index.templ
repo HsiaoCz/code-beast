@@ -1,0 +1,8 @@
+package view
+
+import "github.com/HsiaoCz/code-beast/slick/app/profile"
+
+templ Index(user profile.User) {
+	<h1>Hello My man { user.Email }</h1>
+	<h1>the user { user.FirstName } - { user.LastName }</h1>
+}
