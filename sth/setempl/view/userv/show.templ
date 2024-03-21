@@ -1,0 +1,12 @@
+package userv
+
+import (
+	"github.com/HsiaoCz/code-beast/sth/setempl/view/layout"
+	"github.com/HsiaoCz/code-beast/sth/setempl/model"
+)
+
+templ Show(user model.User) {
+	@layout.Base() {
+		<h1>hello { user.Email } from the user page</h1>
+	}
+}
