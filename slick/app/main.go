@@ -8,6 +8,7 @@ import (
 
 func main() {
 	app := slick.New()
+	app.Plugs(slick.WithAuth)
 	app.Get("/hello", HandleHello)
 	app.Get("/dashbord", HandleDashBord)
 	app.Start(":9001")

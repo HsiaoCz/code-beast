@@ -14,6 +14,9 @@ func (s *Slick) makeHttpHandler(h Handler) httprouter.Handle {
 			params: p,
 			ctx:    r.Context(),
 		}
+		for _, mw := range s.middlewares {
+			h = mw(h)
+		}
 		if err := h(ctx); err != nil {
 			// handle the err
 			s.ErrorHandler(err, ctx)

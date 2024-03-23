@@ -9,7 +9,7 @@ import (
 type Slick struct {
 	router       *httprouter.Router
 	ErrorHandler ErrorHandler
-	middlewares  []Handler
+	middlewares  []Plug
 }
 
 func New() *Slick {
@@ -19,7 +19,7 @@ func New() *Slick {
 	}
 }
 
-func (s *Slick) Get(path string, h Handler, plugs ...Handler) {
+func (s *Slick) Get(path string, h Handler, plugs ...Plug) {
 	s.Plugs(plugs...)
 	s.router.GET(path, s.makeHttpHandler(h))
 }
@@ -28,6 +28,6 @@ func (s *Slick) Start(addr string) error {
 	return http.ListenAndServe(addr, s.router)
 }
 
-func (s *Slick) Plugs(middlewares ...Handler) {
-	s.middlewares = append(s.middlewares, middlewares...)
+func (s *Slick) Plugs(plugs ...Plug) {
+	s.middlewares = append(s.middlewares, plugs...)
 }
