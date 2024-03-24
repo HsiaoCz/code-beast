@@ -1,0 +1,9 @@
+syntax="proto3";
+
+package types;
+
+option go_package="./types";
+
+message CatFact{
+    string fact=1;
+}
