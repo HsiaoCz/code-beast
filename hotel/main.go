@@ -3,20 +3,28 @@ package main
 import (
 	"context"
 	"flag"
-	"fmt"
 	"log"
+	"net/http"
 
 	"github.com/HsiaoCz/code-beast/hotel/api"
-	"github.com/HsiaoCz/code-beast/hotel/types"
+	"github.com/HsiaoCz/code-beast/hotel/store"
 	"github.com/gofiber/fiber/v2"
-	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 const dburi = "mongodb://localhost:27017"
-const dbname = "hotel-reservation"
-const userColl = "users"
+
+// const dbname = "hotel-reservation"
+// const userColl = "users"
+
+var config = fiber.Config{
+	ErrorHandler: func(c *fiber.Ctx, err error) error {
+		return c.Status(http.StatusInternalServerError).JSON(fiber.Map{
+			"error": err.Error(),
+		})
+	},
+}
 
 func main() {
 
@@ -25,34 +33,39 @@ func main() {
 		log.Fatal(err)
 	}
 
-	ctx := context.Background()
+	// ctx := context.Background()
 
-	coll := client.Database(dbname).Collection(userColl)
+	// coll := client.Database(dbname).Collection(userColl)
 
-	user := types.User{
-		FirstName: "james",
-		LastName:  "At the water cooler",
-	}
+	// user := types.User{
+	// 	FirstName: "james",
+	// 	LastName:  "At the water cooler",
+	// }
 
-	res, err := coll.InsertOne(ctx, user)
-	if err != nil {
-		log.Fatal(err)
-	}
+	// res, err := coll.InsertOne(ctx, user)
+	// if err != nil {
+	// 	log.Fatal(err)
+	// }
 
-	fmt.Printf("the response of mongo insert: %v\n", res)
+	// fmt.Printf("the response of mongo insert: %v\n", res)
 
-	var james types.User
+	// var james types.User
 
-	coll.FindOne(ctx, bson.M{}).Decode(&james)
+	// if err := coll.FindOne(ctx, bson.M{}).Decode(&james); err != nil {
+	// 	log.Fatal(err)
+	// }
+
+	// fmt.Printf("the james %+v\n", james)
 
 	listenAddr := flag.String("listenAddr", ":9001", "set the listen address of the api server")
 	flag.Parse()
 
-	app := fiber.New()
+	app := fiber.New(config)
 	v1 := app.Group("/api/v1")
 	{
-		v1.Get("/user", api.HandleGetUsers)
-		v1.Get("/user/:id", api.HandleGetUser)
+		userHander := api.NewUserHandler(store.NewMongoUserStore(client))
+		v1.Get("/user", userHander.HandleGetUsers)
+		v1.Get("/user/:id", userHander.HandleGetUser)
 	}
 	app.Listen(*listenAddr)
 }
