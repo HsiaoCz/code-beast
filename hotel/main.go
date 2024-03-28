@@ -66,6 +66,7 @@ func main() {
 		userHander := api.NewUserHandler(store.NewMongoUserStore(client))
 		v1.Get("/user", userHander.HandleGetUsers)
 		v1.Get("/user/:id", userHander.HandleGetUser)
+		v1.Post("/user", userHander.HandlePostUser)
 	}
 	app.Listen(*listenAddr)
 }
