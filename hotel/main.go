@@ -58,15 +58,27 @@ func main() {
 	listenAddr := flag.String("listenAddr", ":9001", "set the listen address of the api server")
 	flag.Parse()
 
-	app := fiber.New(config)
-	v1 := app.Group("/api/v1")
+	// handlers init
+	var (
+		userHander   = api.NewUserHandler(store.NewMongoUserStore(client, store.DBNAME))
+		hotelStore   = store.NewMongoHotelStore(client)
+		roomStore    = store.NewMongoRoomStore(client, hotelStore)
+		hotelHandler = api.NewHotelHandler(hotelStore, roomStore)
+
+		app = fiber.New(config)
+		v1  = app.Group("/api/v1")
+	)
 	{
-		userHander := api.NewUserHandler(store.NewMongoUserStore(client, store.DBNAME))
+		// router
+		// user
 		v1.Get("/user", userHander.HandleGetUsers)
 		v1.Get("/user/:id", userHander.HandleGetUser)
 		v1.Post("/user", userHander.HandlePostUser)
 		v1.Delete("/user/:id", userHander.HandleDeleteUser)
 		v1.Put("/user/:id", userHander.HandlePutUser)
+
+		// hotel router
+		v1.Get("/hotel", hotelHandler.HandleGetHotels)
 	}
 	app.Listen(*listenAddr)
 }

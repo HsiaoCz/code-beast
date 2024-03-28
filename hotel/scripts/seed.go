@@ -2,32 +2,42 @@ package main
 
 import (
 	"context"
-	"fmt"
 	"log"
 
 	"github.com/HsiaoCz/code-beast/hotel/store"
 	"github.com/HsiaoCz/code-beast/hotel/types"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-func main() {
-	ctx := context.Background()
-	client, err := mongo.Connect(ctx, options.Client().ApplyURI(store.DBURI))
-	if err != nil {
-		log.Fatal(err)
-	}
+var (
+	client     *mongo.Client
+	roomStore  store.RoomStore
+	hotelStore store.HotelStore
+	ctx        = context.Background()
+)
 
-	hotelStore := store.NewMongoHotelStore(client, store.DBNAME)
-	roomStore := store.NewMongoRoomStore(client, store.DBNAME)
+func seedHotel(name, location string) {
 	hotel := types.Hotel{
-		Name:      "Bellucia",
-		Localtion: "France",
+		Name:      name,
+		Localtion: location,
+		Rooms:     []primitive.ObjectID{},
 	}
 
-	room := types.Room{
-		Type:      types.SingleRoomType,
-		BasePrice: 99.9,
+	rooms := []types.Room{
+		{
+			Type:      types.SingleRoomType,
+			BasePrice: 99.9,
+		},
+		{
+			Type:      types.DeluxeRoomType,
+			BasePrice: 199.0,
+		},
+		{
+			Type:      types.SeaSideRoomType,
+			BasePrice: 122.9,
+		},
 	}
 
 	insertedHotel, err := hotelStore.InsertHotel(ctx, &hotel)
@@ -35,12 +45,30 @@ func main() {
 		log.Fatal(err)
 	}
 
-	room.HotelID = insertedHotel.ID
-	insertRoom, err := roomStore.InsertRoom(ctx, &room)
+	for _, room := range rooms {
+		room.HotelID = insertedHotel.ID
+		_, err := roomStore.InsertRoom(ctx, &room)
+		if err != nil {
+			log.Fatal(err)
+		}
+	}
+}
+
+func init() {
+	var err error
+	client, err = mongo.Connect(ctx, options.Client().ApplyURI(store.DBURI))
 	if err != nil {
 		log.Fatal(err)
 	}
+	if err := client.Database(store.DBNAME).Drop(ctx); err != nil {
+		log.Fatal(err)
+	}
+	hotelStore = store.NewMongoHotelStore(client)
+	roomStore = store.NewMongoRoomStore(client, hotelStore)
+}
 
-	fmt.Println(insertedHotel)
-	fmt.Println(insertRoom)
+func main() {
+	seedHotel("Bellucia", "France")
+	seedHotel("The cozy hotel", "The Nederlands")
+	seedHotel("Dont die in sleep", "london")
 }
