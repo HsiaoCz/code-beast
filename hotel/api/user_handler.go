@@ -1,10 +1,15 @@
 package api
 
 import (
+	"errors"
+	"net/http"
+
 	"github.com/HsiaoCz/code-beast/hotel/store"
 	"github.com/HsiaoCz/code-beast/hotel/types"
 	"github.com/gofiber/fiber/v2"
-	"net/http"
+	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
+	"go.mongodb.org/mongo-driver/mongo"
 )
 
 type UserHandler struct {
@@ -31,6 +36,9 @@ func (h *UserHandler) HandleGetUser(c *fiber.Ctx) error {
 func (h *UserHandler) HandleGetUsers(c *fiber.Ctx) error {
 	users, err := h.userStore.GetUsers(c.Context())
 	if err != nil {
+		if errors.Is(err, mongo.ErrNoDocuments) {
+			return c.Status(http.StatusBadRequest).JSON(fiber.Map{"msg": "user not found"})
+		}
 		return err
 	}
 	return c.Status(http.StatusOK).JSON(users)
@@ -54,4 +62,31 @@ func (h *UserHandler) HandlePostUser(c *fiber.Ctx) error {
 		return err
 	}
 	return c.Status(http.StatusOK).JSON(insertedUser)
+}
+
+func (h *UserHandler) HandleDeleteUser(c *fiber.Ctx) error {
+	userID := c.Params("id")
+	if err := h.userStore.DeleteUser(c.Context(), userID); err != nil {
+		return err
+	}
+	return c.Status(http.StatusOK).JSON(fiber.Map{"delete": userID})
+}
+
+func (h *UserHandler) HandlePutUser(c *fiber.Ctx) error {
+	var (
+		params types.UpdateUserParams
+		userID = c.Params("id")
+	)
+	oid, err := primitive.ObjectIDFromHex(userID)
+	if err != nil {
+		return err
+	}
+	if err := c.BodyParser(&params); err != nil {
+		return err
+	}
+	filter := bson.M{"_id": oid}
+	if err := h.userStore.UpdateUser(c.Context(), filter, params); err != nil {
+		return err
+	}
+	return c.Status(http.StatusOK).JSON(fiber.Map{"updated": userID})
 }
