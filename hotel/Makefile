@@ -9,3 +9,6 @@ test:
 	
 mongo:
 	@docker run --name mongodb -d mongo:latest -p 27017:27017
+
+seed:
+	@go run scripts/seed.go
