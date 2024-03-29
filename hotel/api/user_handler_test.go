@@ -15,20 +15,17 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-const testdburi = "mongodb://localhost:27017"
-const dbname = "hotel-reservation-test"
-
 type teststore struct {
 	store.UserStore
 }
 
 func setup(t *testing.T) *teststore {
-	client, err := mongo.Connect(context.TODO(), options.Client().ApplyURI(testdburi))
+	client, err := mongo.Connect(context.TODO(), options.Client().ApplyURI(store.DBURI))
 	if err != nil {
 		t.Fatal(err)
 	}
 	return &teststore{
-		UserStore: store.NewMongoUserStore(client, dbname),
+		UserStore: store.NewMongoUserStore(client),
 	}
 }
 
