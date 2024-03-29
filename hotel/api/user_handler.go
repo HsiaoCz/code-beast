@@ -2,6 +2,7 @@ package api
 
 import (
 	"errors"
+	"fmt"
 	"net/http"
 
 	"github.com/HsiaoCz/code-beast/hotel/store"
@@ -89,4 +90,13 @@ func (h *UserHandler) HandlePutUser(c *fiber.Ctx) error {
 		return err
 	}
 	return c.Status(http.StatusOK).JSON(fiber.Map{"updated": userID})
+}
+
+func (h *UserHandler) HandleAuthenticate(c *fiber.Ctx) error {
+	var authParams types.AuthParams
+	if err := c.BodyParser(&authParams); err != nil {
+		return c.Status(http.StatusBadRequest).JSON(fiber.Map{"error": err.Error()})
+	}
+	fmt.Println(authParams)
+	return nil
 }

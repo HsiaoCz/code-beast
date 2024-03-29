@@ -81,3 +81,8 @@ func NewUserFromPase(params CreateUserParams) (*User, error) {
 		EncryptedPasswrod: string(encpw),
 	}, nil
 }
+
+type AuthParams struct {
+	Emial    string `json:"email"`
+	Password string `json:"password"`
+}

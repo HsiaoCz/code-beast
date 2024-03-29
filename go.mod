@@ -6,6 +6,7 @@ require (
 	github.com/a-h/templ v0.2.639
 	github.com/anthdm/hollywood v0.0.0-20240115210651-dd34702ee21f
 	github.com/gofiber/fiber/v2 v2.52.3
+	github.com/golang-jwt/jwt v3.2.2+incompatible
 	github.com/google/uuid v1.6.0
 	github.com/gorilla/mux v1.8.1
 	github.com/hashicorp/consul/api v1.28.2

@@ -7,6 +7,7 @@ import (
 	"net/http"
 
 	"github.com/HsiaoCz/code-beast/hotel/api"
+	"github.com/HsiaoCz/code-beast/hotel/api/middleware"
 	"github.com/HsiaoCz/code-beast/hotel/store"
 	"github.com/gofiber/fiber/v2"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -74,11 +75,11 @@ func main() {
 	{
 		// router
 		// user
-		v1.Get("/user", userHander.HandleGetUsers)
-		v1.Get("/user/:id", userHander.HandleGetUser)
+		v1.Get("/user", middleware.JWTAuthMiddleware(), userHander.HandleGetUsers)
+		v1.Get("/user/:id", middleware.JWTAuthMiddleware(), userHander.HandleGetUser)
 		v1.Post("/user", userHander.HandlePostUser)
-		v1.Delete("/user/:id", userHander.HandleDeleteUser)
-		v1.Put("/user/:id", userHander.HandlePutUser)
+		v1.Delete("/user/:id", middleware.JWTAuthMiddleware(), userHander.HandleDeleteUser)
+		v1.Put("/user/:id", middleware.JWTAuthMiddleware(), userHander.HandlePutUser)
 
 		// hotel router
 		v1.Get("/hotel", hotelHandler.HandleGetHotels)
