@@ -21,7 +21,7 @@ func JWTAuthMiddleware() fiber.Handler {
 		if err != nil {
 			return errors.New("invalid autherization")
 		}
-		c.Locals(CtxUserKey, mc.UserID)
+		c.Context().SetUserValue(CtxUserKey, mc.UserID)
 		return c.Next()
 	}
 }
