@@ -6,7 +6,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-const CtxUserKey = "email"
+const CtxUserKey = "userID"
 
 func JWTAuthMiddleware() fiber.Handler {
 	return func(c *fiber.Ctx) error {
@@ -21,7 +21,7 @@ func JWTAuthMiddleware() fiber.Handler {
 		if err != nil {
 			return errors.New("invalid autherization")
 		}
-		c.Locals(CtxUserKey, mc.Email)
+		c.Locals(CtxUserKey, mc.UserID)
 		return c.Next()
 	}
 }

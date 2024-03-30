@@ -2,9 +2,9 @@ package api
 
 import (
 	"errors"
-	"fmt"
 	"net/http"
 
+	"github.com/HsiaoCz/code-beast/hotel/api/middleware"
 	"github.com/HsiaoCz/code-beast/hotel/store"
 	"github.com/HsiaoCz/code-beast/hotel/types"
 	"github.com/gofiber/fiber/v2"
@@ -92,11 +92,21 @@ func (h *UserHandler) HandlePutUser(c *fiber.Ctx) error {
 	return c.Status(http.StatusOK).JSON(fiber.Map{"updated": userID})
 }
 
-func (h *UserHandler) HandleAuthenticate(c *fiber.Ctx) error {
+func (h *UserHandler) HandleUserLogin(c *fiber.Ctx) error {
 	var authParams types.AuthParams
 	if err := c.BodyParser(&authParams); err != nil {
 		return c.Status(http.StatusBadRequest).JSON(fiber.Map{"error": err.Error()})
 	}
-	fmt.Println(authParams)
-	return nil
+	userlv, err := h.userStore.GetUserByEmailAndPassword(c.Context(), authParams)
+	if err != nil {
+		return err
+	}
+	token, err := middleware.GenToken(userlv.ID, userlv.Email)
+	if err != nil {
+		return err
+	}
+	return c.Status(http.StatusOK).JSON(fiber.Map{
+		"user":  userlv,
+		"token": token,
+	})
 }

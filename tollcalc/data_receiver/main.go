@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"log/slog"
 	"net/http"
@@ -50,6 +51,7 @@ func (dr *DataReceiver) wsReceiveLoop(r *http.Request) {
 			slog.Error("data receiver read from websocket error", "err", err)
 			continue
 		}
+		fmt.Printf("received OBU data from [%d] :: <lat %2.f,long %2.f>\n", data.OBUID, data.Lat, data.Long)
 		dr.msgch <- data
 	}
 }

@@ -8,6 +8,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
+	"golang.org/x/crypto/bcrypt"
 )
 
 const userColl = "users"
@@ -24,6 +25,7 @@ type UserStore interface {
 	InsertUser(context.Context, *types.User) (*types.User, error)
 	DeleteUser(context.Context, string) error
 	UpdateUser(ctx context.Context, filter bson.M, params types.UpdateUserParams) error
+	GetUserByEmailAndPassword(ctx context.Context, params types.AuthParams) (*types.UserLoginResponse, error)
 }
 
 type MongoUserStore struct {
@@ -64,6 +66,10 @@ func (m *MongoUserStore) GetUsers(ctx context.Context) ([]*types.User, error) {
 }
 
 func (m *MongoUserStore) InsertUser(ctx context.Context, user *types.User) (*types.User, error) {
+	_, err := m.coll.Find(ctx, bson.M{"email": user.Email})
+	if err == nil {
+		return nil, err
+	}
 	res, err := m.coll.InsertOne(ctx, user)
 	if err != nil {
 		return nil, err
@@ -103,4 +109,16 @@ func (m *MongoUserStore) UpdateUser(ctx context.Context, filter bson.M, params t
 func (m *MongoUserStore) Drop(ctx context.Context) error {
 	fmt.Println("----dropping user connection")
 	return m.coll.Drop(ctx)
+}
+
+func (m *MongoUserStore) GetUserByEmailAndPassword(ctx context.Context, params types.AuthParams) (*types.UserLoginResponse, error) {
+	enpwd, err := bcrypt.GenerateFromPassword([]byte(params.Password), 12)
+	if err != nil {
+		return nil, err
+	}
+	var usersr types.UserLoginResponse
+	if err := m.coll.FindOne(ctx, bson.M{"email": params.Emial, "EncryptedPassword": string(enpwd)}).Decode(&usersr); err != nil {
+		return nil, err
+	}
+	return &usersr, nil
 }

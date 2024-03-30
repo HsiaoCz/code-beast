@@ -78,12 +78,13 @@ func main() {
 		v1.Get("/user", middleware.JWTAuthMiddleware(), userHander.HandleGetUsers)
 		v1.Get("/user/:id", middleware.JWTAuthMiddleware(), userHander.HandleGetUser)
 		v1.Post("/user", userHander.HandlePostUser)
+		v1.Post("/user/login", userHander.HandleUserLogin)
 		v1.Delete("/user/:id", middleware.JWTAuthMiddleware(), userHander.HandleDeleteUser)
 		v1.Put("/user/:id", middleware.JWTAuthMiddleware(), userHander.HandlePutUser)
 
 		// hotel router
-		v1.Get("/hotel", hotelHandler.HandleGetHotels)
-		v1.Get("/hotel/:id/rooms", hotelHandler.HandleGetRooms)
+		v1.Get("/hotel", middleware.JWTAuthMiddleware(), hotelHandler.HandleGetHotels)
+		v1.Get("/hotel/:id/rooms", middleware.JWTAuthMiddleware(), hotelHandler.HandleGetRooms)
 	}
 	app.Listen(*listenAddr)
 }

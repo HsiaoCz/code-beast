@@ -86,3 +86,10 @@ type AuthParams struct {
 	Emial    string `json:"email"`
 	Password string `json:"password"`
 }
+
+type UserLoginResponse struct {
+	ID        primitive.ObjectID `bson:"_id" json:"id,omitempty"`
+	FirstName string             `bson:"firstName" json:"firstName"`
+	LastName  string             `bson:"lastName" json:"lastName"`
+	Email     string             `bson:"email" json:"email"`
+}
