@@ -25,7 +25,7 @@ type UserStore interface {
 	InsertUser(context.Context, *types.User) (*types.User, error)
 	DeleteUser(context.Context, string) error
 	UpdateUser(ctx context.Context, filter bson.M, params types.UpdateUserParams) error
-	GetUserByEmailAndPassword(ctx context.Context, params types.AuthParams) (*types.UserLoginResponse, error)
+	GetUserByEmailAndPassword(ctx context.Context, params types.AuthParams) (*types.User, error)
 }
 
 type MongoUserStore struct {
@@ -111,14 +111,14 @@ func (m *MongoUserStore) Drop(ctx context.Context) error {
 	return m.coll.Drop(ctx)
 }
 
-func (m *MongoUserStore) GetUserByEmailAndPassword(ctx context.Context, params types.AuthParams) (*types.UserLoginResponse, error) {
+func (m *MongoUserStore) GetUserByEmailAndPassword(ctx context.Context, params types.AuthParams) (*types.User, error) {
 	enpwd, err := bcrypt.GenerateFromPassword([]byte(params.Password), 12)
 	if err != nil {
 		return nil, err
 	}
-	var usersr types.UserLoginResponse
-	if err := m.coll.FindOne(ctx, bson.M{"email": params.Emial, "EncryptedPassword": string(enpwd)}).Decode(&usersr); err != nil {
+	var user types.User
+	if err := m.coll.FindOne(ctx, bson.M{"email": params.Emial, "EncryptedPassword": string(enpwd)}).Decode(&user); err != nil {
 		return nil, err
 	}
-	return &usersr, nil
+	return &user, nil
 }

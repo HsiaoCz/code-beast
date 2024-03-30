@@ -84,6 +84,7 @@ func main() {
 
 		// hotel router
 		v1.Get("/hotel", middleware.JWTAuthMiddleware(), hotelHandler.HandleGetHotels)
+		v1.Get("/hotel/:id",middleware.JWTAuthMiddleware(),hotelHandler.HandleGetHotelByID)
 		v1.Get("/hotel/:id/rooms", middleware.JWTAuthMiddleware(), hotelHandler.HandleGetRooms)
 	}
 	app.Listen(*listenAddr)

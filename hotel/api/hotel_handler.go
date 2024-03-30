@@ -68,7 +68,3 @@ func (h *HotelHandler) HandleGetHotelByID(c *fiber.Ctx) error {
 	}
 	return c.Status(http.StatusOK).JSON(hotel)
 }
-
-func (h *HotelHandler) HandleUpdateHotel(c *fiber.Ctx) error {
-	return nil
-}

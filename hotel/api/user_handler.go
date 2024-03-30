@@ -97,16 +97,16 @@ func (h *UserHandler) HandleUserLogin(c *fiber.Ctx) error {
 	if err := c.BodyParser(&authParams); err != nil {
 		return c.Status(http.StatusBadRequest).JSON(fiber.Map{"error": err.Error()})
 	}
-	userlv, err := h.userStore.GetUserByEmailAndPassword(c.Context(), authParams)
+	user, err := h.userStore.GetUserByEmailAndPassword(c.Context(), authParams)
 	if err != nil {
 		return err
 	}
-	token, err := middleware.GenToken(userlv.ID, userlv.Email)
+	token, err := middleware.GenToken(user.ID, user.Email)
 	if err != nil {
 		return err
 	}
 	return c.Status(http.StatusOK).JSON(fiber.Map{
-		"user":  userlv,
+		"user":  user,
 		"token": token,
 	})
 }
