@@ -71,8 +71,9 @@ func main() {
 		roomHandler    = api.NewRoomHandler(store)
 		bookingHandler = api.NewBookingHandler(store)
 
-		app = fiber.New(config)
-		v1  = app.Group("/api/v1")
+		app   = fiber.New(config)
+		v1    = app.Group("/api/v1")
+		admin = app.Group("/api/v1/admin")
 	)
 	{
 		// router
@@ -94,7 +95,7 @@ func main() {
 		v1.Get("/room", middleware.JWTAuthMiddleware(), roomHandler.HandleGetRooms)
 
 		// bookings handlers
-		v1.Get("/booking", middleware.JWTAuthMiddleware(), bookingHandler.HandleGetBookings)
+		admin.Get("/booking", middleware.JWTAuthMiddleware(), bookingHandler.HandleGetBookings)
 		v1.Get("/booking/:id", middleware.JWTAuthMiddleware(), bookingHandler.HandleGetBooking)
 	}
 	app.Listen(*listenAddr)
