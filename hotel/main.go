@@ -66,7 +66,8 @@ func main() {
 
 		hotelStore   = store.NewMongoHotelStore(client)
 		roomStore    = store.NewMongoRoomStore(client, hotelStore)
-		store        = &store.Store{User: userStore, Room: roomStore, Hotel: hotelStore}
+		bookingStore = store.NewMongoBookingStore(client)
+		store        = &store.Store{User: userStore, Room: roomStore, Hotel: hotelStore, Booking: bookingStore}
 		hotelHandler = api.NewHotelHandler(store)
 		roomHandler  = api.NewRoomHandler(store)
 

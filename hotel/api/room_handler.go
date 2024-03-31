@@ -1,12 +1,14 @@
 package api
 
 import (
+	"fmt"
+	"log/slog"
 	"net/http"
-	"time"
 
 	"github.com/HsiaoCz/code-beast/hotel/store"
 	"github.com/HsiaoCz/code-beast/hotel/types"
 	"github.com/gofiber/fiber/v2"
+	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
@@ -36,26 +38,40 @@ func (r *RoomHandler) HandleBookRoom(c *fiber.Ctx) error {
 			"message": "internal server error",
 		})
 	}
-	booking := types.Booking{
+	booking := &types.Booking{
 		UserID:     userID,
 		RoomID:     roomID,
 		NumPersons: params.NumPersons,
 	}
-	formDate, err := time.Parse("2006-01-02", params.FromDate)
+	if err := params.Validate(booking); err != nil {
+		return err
+	}
+	where := bson.M{
+		"fromDate": bson.M{
+			"gte": booking.FromDate,
+		},
+		"tillDate": bson.M{
+			"lte": booking.TillDate,
+		},
+	}
+	bookings, err := r.store.Booking.GetBookings(c.Context(), where)
 	if err != nil {
+		return err
+	}
+	slog.Info("the bookings", "bookings", bookings)
+	if len(bookings) > 0 {
 		return c.Status(http.StatusBadRequest).JSON(fiber.Map{
 			"type":    "error",
-			"message": "the formDate is unvalid",
+			"message": fmt.Sprintf("the room %s already booked", c.Params("id")),
 		})
 	}
-	tillDate, err := time.Parse("2006-01-02", params.TillDate)
+	insterd, err := r.store.Booking.InsertBooking(c.Context(), booking)
 	if err != nil {
-		return c.Status(http.StatusBadRequest).JSON(fiber.Map{
-			"type":    "error",
-			"message": "the tillDate is unvalid",
-		})
+		return err
 	}
-	booking.FromDate = formDate
-	booking.TillDate = tillDate
-	return c.Status(http.StatusOK).JSON(&booking)
+	return c.Status(http.StatusOK).JSON(insterd)
+}
+
+func (r *RoomHandler) HandleCancelRoom(c *fiber.Ctx) error {
+	return nil
 }
