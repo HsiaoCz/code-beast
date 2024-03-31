@@ -26,7 +26,6 @@ var config = fiber.Config{
 }
 
 func main() {
-
 	client, err := mongo.Connect(context.TODO(), options.Client().ApplyURI(store.DBURI))
 	if err != nil {
 		log.Fatal(err)
@@ -64,12 +63,13 @@ func main() {
 		userStore  = store.NewMongoUserStore(client)
 		userHander = api.NewUserHandler(userStore)
 
-		hotelStore   = store.NewMongoHotelStore(client)
-		roomStore    = store.NewMongoRoomStore(client, hotelStore)
-		bookingStore = store.NewMongoBookingStore(client)
-		store        = &store.Store{User: userStore, Room: roomStore, Hotel: hotelStore, Booking: bookingStore}
-		hotelHandler = api.NewHotelHandler(store)
-		roomHandler  = api.NewRoomHandler(store)
+		hotelStore     = store.NewMongoHotelStore(client)
+		roomStore      = store.NewMongoRoomStore(client, hotelStore)
+		bookingStore   = store.NewMongoBookingStore(client)
+		store          = &store.Store{User: userStore, Room: roomStore, Hotel: hotelStore, Booking: bookingStore}
+		hotelHandler   = api.NewHotelHandler(store)
+		roomHandler    = api.NewRoomHandler(store)
+		bookingHandler = api.NewBookingHandler(store)
 
 		app = fiber.New(config)
 		v1  = app.Group("/api/v1")
@@ -89,8 +89,13 @@ func main() {
 		v1.Get("/hotel/:id", middleware.JWTAuthMiddleware(), hotelHandler.HandleGetHotelByID)
 		v1.Get("/hotel/:id/rooms", middleware.JWTAuthMiddleware(), hotelHandler.HandleGetRooms)
 
-		// book
+		// room
 		v1.Post("/room/:id/book", middleware.JWTAuthMiddleware(), roomHandler.HandleBookRoom)
+		v1.Get("/room", middleware.JWTAuthMiddleware(), roomHandler.HandleGetRooms)
+
+		// bookings handlers
+		v1.Get("/booking", middleware.JWTAuthMiddleware(), bookingHandler.HandleGetBookings)
+		v1.Get("/booking/:id", middleware.JWTAuthMiddleware(), bookingHandler.HandleGetBooking)
 	}
 	app.Listen(*listenAddr)
 }

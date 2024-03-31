@@ -42,7 +42,6 @@ func (p BookRoomParams) Validate(booking *Booking) error {
 		FromDate: formDate,
 		TillDate: tillDate,
 	}
-
 	return nil
 }
 

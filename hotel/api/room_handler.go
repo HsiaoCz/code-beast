@@ -47,6 +47,7 @@ func (r *RoomHandler) HandleBookRoom(c *fiber.Ctx) error {
 		return err
 	}
 	where := bson.M{
+		"roomID": roomID,
 		"fromDate": bson.M{
 			"gte": booking.FromDate,
 		},
@@ -72,6 +73,10 @@ func (r *RoomHandler) HandleBookRoom(c *fiber.Ctx) error {
 	return c.Status(http.StatusOK).JSON(insterd)
 }
 
-func (r *RoomHandler) HandleCancelRoom(c *fiber.Ctx) error {
-	return nil
+func (r *RoomHandler) HandleGetRooms(c *fiber.Ctx) error {
+	rooms, err := r.store.Room.GetRooms(c.Context(), bson.M{})
+	if err != nil {
+		return err
+	}
+	return c.Status(http.StatusOK).JSON(rooms)
 }
