@@ -1,7 +1,9 @@
 package p2p
 
 import (
+	"bytes"
 	"fmt"
+	"io"
 	"net"
 	"sync"
 )
@@ -13,8 +15,18 @@ type Peer struct {
 	conn net.Conn
 }
 
+func (p *Peer) Send(b []byte) error {
+	_, err := p.conn.Write(b)
+	return err
+}
+
 type ServerConfig struct {
-	listenAddr string
+	ListenAddr string
+}
+
+type Message struct {
+	Payload io.Reader
+	From    net.Addr
 }
 
 type Server struct {
@@ -24,13 +36,19 @@ type Server struct {
 	mu       sync.Mutex
 	peers    map[net.Addr]*Peer
 	addPeer  chan *Peer
+
+	delPeer chan *Peer
+	handler Handler
+	msgch   chan *Message
 }
 
 func NewServer(cfg ServerConfig) *Server {
 	return &Server{
+		handler:      &DefaultHandler{},
 		ServerConfig: cfg,
 		peers:        make(map[net.Addr]*Peer),
 		addPeer:      make(chan *Peer),
+		msgch:        make(chan *Message),
 	}
 }
 
@@ -43,14 +61,22 @@ func (s *Server) Start() {
 	go s.acceptLoop()
 }
 
-func (s *Server) handleConn(conn net.Conn) {
+func (s *Server) handleConn(p *Peer) {
+
+	defer func() {
+		s.delPeer <- p
+	}()
+
 	buf := make([]byte, 1024)
 	for {
-		n, err := conn.Read(buf)
+		n, err := p.conn.Read(buf)
 		if err != nil {
 			break
 		}
-
+		s.msgch <- &Message{
+			From:    p.conn.RemoteAddr(),
+			Payload: bytes.NewBuffer(buf[:n]),
+		}
 		fmt.Println(string(buf[:n]))
 	}
 }
@@ -61,12 +87,17 @@ func (s *Server) acceptLoop() {
 		if err != nil {
 			panic(err)
 		}
-		go s.handleConn(conn)
+		peer := &Peer{
+			conn: conn,
+		}
+		s.addPeer <- peer
+		peer.Send([]byte("POKER v0.0.1"))
+		go s.handleConn(peer)
 	}
 }
 
 func (s *Server) listen() error {
-	ln, err := net.Listen("tcp", s.listenAddr)
+	ln, err := net.Listen("tcp", s.ListenAddr)
 	if err != nil {
 		return err
 	}
@@ -79,7 +110,9 @@ func (s *Server) loop() {
 		select {
 		case peer := <-s.addPeer:
 			s.peers[peer.conn.RemoteAddr()] = peer
-			fmt.Printf("new player connected %s", peer.conn.RemoteAddr())
+			fmt.Printf("new player connected %s\n", peer.conn.RemoteAddr())
+		default:
+			fmt.Println("well done")
 		}
 	}
 }
