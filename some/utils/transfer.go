@@ -4,6 +4,8 @@ import (
 	"encoding/json"
 	"log/slog"
 	"net/http"
+
+	"github.com/a-h/templ"
 )
 
 type Map map[string]any
@@ -25,4 +27,8 @@ func WriteJSON(w http.ResponseWriter, code int, v any) error {
 	w.Header().Add("Content-Type", "application/json")
 	w.WriteHeader(code)
 	return json.NewEncoder(w).Encode(v)
+}
+
+func Render(comp templ.Component, w http.ResponseWriter, r *http.Request) error {
+	return comp.Render(r.Context(), w)
 }

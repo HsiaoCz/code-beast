@@ -16,7 +16,8 @@ func main() {
 	flag.Parse()
 	router := http.NewServeMux()
 	userHandler := handlers.NewUserHandler()
-	router.HandleFunc("/user/create", utils.TransferHandler(userHandler.HandleCreateUser))
+	router.HandleFunc("POST /user/create", utils.TransferHandler(userHandler.HandleCreateUser))
+	router.HandleFunc("GET /user/show", utils.TransferHandler(userHandler.HandleShowUser))
 	server := &http.Server{
 		Addr:         *listenAddr,
 		ReadTimeout:  time.Millisecond * 1500,

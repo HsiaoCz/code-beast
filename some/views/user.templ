@@ -1,0 +1,9 @@
+package views
+
+import "github.com/HsiaoCz/code-beast/some/types"
+
+templ Show(user types.User) {
+	@Base() {
+		<h1>Hello { user.Username } from the user page</h1>
+	}
+}
