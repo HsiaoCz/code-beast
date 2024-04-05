@@ -21,6 +21,7 @@ func (p *Peer) Send(b []byte) error {
 }
 
 type ServerConfig struct {
+	Version    string
 	ListenAddr string
 }
 
@@ -61,6 +62,18 @@ func (s *Server) Start() {
 	go s.acceptLoop()
 }
 
+func (s *Server) Connect(addr string) error {
+	conn, err := net.Dial("tcp", addr)
+	if err != nil {
+		return err
+	}
+	peer := &Peer{
+		conn: conn,
+	}
+	s.addPeer <- peer
+	return peer.Send([]byte(s.Version))
+}
+
 func (s *Server) handleConn(p *Peer) {
 
 	defer func() {
@@ -91,7 +104,7 @@ func (s *Server) acceptLoop() {
 			conn: conn,
 		}
 		s.addPeer <- peer
-		peer.Send([]byte("POKER v0.0.1"))
+		peer.Send([]byte(s.Version))
 		go s.handleConn(peer)
 	}
 }

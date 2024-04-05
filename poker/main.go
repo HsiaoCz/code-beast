@@ -13,8 +13,16 @@ func main() {
 	// 	fmt.Println(d)
 	// }
 	cfg := p2p.ServerConfig{
+		Version:    "GOPOKER V0.0.1-alpha",
 		ListenAddr: ":3001",
 	}
 	server := p2p.NewServer(cfg)
+
+	remoteCfg := p2p.ServerConfig{
+		Version:    "GOPOKER V0.0.1-alpha",
+		ListenAddr: ":4001",
+	}
+	remoteServer := p2p.NewServer(remoteCfg)
+	remoteServer.Connect(":3001")
 	server.Start()
 }
