@@ -43,9 +43,11 @@ func (r *RoomHandler) HandleBookRoom(c *fiber.Ctx) error {
 		RoomID:     roomID,
 		NumPersons: params.NumPersons,
 	}
-	if err := params.Validate(booking); err != nil {
+	if err := params.Validate(); err != nil {
 		return err
 	}
+	// now there is a problem
+	// two date need to format
 	where := bson.M{
 		"roomID": roomID,
 		"fromDate": bson.M{

@@ -14,6 +14,7 @@ type Booking struct {
 	NumPersons int                `bson:"numPerson,omitempty" json:"numPerson,omitempty"`
 	FromDate   time.Time          `bson:"fromDate,omitempty" json:"fromDate,omitempty"`
 	TillDate   time.Time          `bson:"tillDate,omitempty" json:"tillDate,omitempty"`
+	Canceled   bool               `bson:"canceled,omitempty" json:"canceled,omitempty"`
 }
 
 type BookRoomParams struct {
@@ -22,7 +23,7 @@ type BookRoomParams struct {
 	NumPersons int    `json:"numPersons"`
 }
 
-func (p BookRoomParams) Validate(booking *Booking) error {
+func (p BookRoomParams) Validate() error {
 	formDate, err := ParseStringToTime(p.FromDate)
 	if err != nil {
 		return errors.New("you should check out the from-date")
@@ -37,10 +38,6 @@ func (p BookRoomParams) Validate(booking *Booking) error {
 	}
 	if formDate.After(tillDate) {
 		return errors.New("cannot book the room,please check out the date")
-	}
-	booking = &Booking{
-		FromDate: formDate,
-		TillDate: tillDate,
 	}
 	return nil
 }
