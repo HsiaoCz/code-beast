@@ -2,8 +2,11 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"log"
+	"sync"
 
+	"github.com/HsiaoCz/code-beast/hotel/api/middleware"
 	"github.com/HsiaoCz/code-beast/hotel/store"
 	"github.com/HsiaoCz/code-beast/hotel/types"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -16,7 +19,37 @@ var (
 	roomStore  store.RoomStore
 	hotelStore store.HotelStore
 	ctx        = context.Background()
+	IsAdmin    = true
+	userStore  = store.NewMongoUserStore(client)
+	wg         = &sync.WaitGroup{}
 )
+
+func seedUser(email string, fname string, lname string, password string) {
+	user, err := types.NewUserFromPase(types.CreateUserParams{
+		Email:     email,
+		FirstName: fname,
+		LastName:  lname,
+		Password:  password,
+	})
+	if err != nil {
+		log.Fatal(err)
+	}
+	user.IsAdmin = IsAdmin
+	_, err = userStore.InsertUser(context.Background(), user)
+	if err != nil {
+		log.Fatal(err)
+	}
+	u, err := userStore.GetUserByEmailAndPassword(context.Background(), types.AuthParams{Emial: user.Email, Password: user.EncryptedPasswrod})
+	if err != nil {
+		log.Fatal(err)
+	}
+	token, err := middleware.GenToken(u.ID, u.Email)
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Printf("%s -> %s\n", user.Email, token)
+	wg.Done()
+}
 
 func seedHotel(name string, location string, rating int) {
 	hotel := types.Hotel{
@@ -56,6 +89,7 @@ func seedHotel(name string, location string, rating int) {
 			log.Fatal(err)
 		}
 	}
+	wg.Done()
 }
 
 func init() {
@@ -72,7 +106,12 @@ func init() {
 }
 
 func main() {
-	seedHotel("Bellucia", "France", 3)
-	seedHotel("The cozy hotel", "The Nederlands", 4)
-	seedHotel("Dont die in sleep", "london", 1)
+	wg.Add(4)
+
+	go seedHotel("Bellucia", "France", 3)
+	go seedHotel("The cozy hotel", "The Nederlands", 4)
+	go seedHotel("Dont die in sleep", "london", 1)
+
+	go seedUser("gg@ggc.com", "lisis", "assms", "sjsjkajs")
+	wg.Wait()
 }
