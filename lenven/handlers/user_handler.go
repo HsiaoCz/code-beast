@@ -1,7 +1,10 @@
 package handlers
 
 import (
+	"net/http"
+
 	"github.com/HsiaoCz/code-beast/lenven/store"
+	"github.com/HsiaoCz/code-beast/lenven/types"
 	"github.com/gofiber/fiber/v2"
 )
 
@@ -16,5 +19,12 @@ func NewUserHandler(store *store.Store) *UserHandler {
 }
 
 func (u *UserHandler) CreateUser(c *fiber.Ctx) error {
+	var params types.CreateUserParams
+	if err := c.BodyParser(&params); err != nil {
+		return err
+	}
+	if errorstr := params.Validate(); len(errorstr) != 0 {
+		return c.Status(http.StatusBadRequest).JSON(errorstr)
+	}
 	return nil
 }
