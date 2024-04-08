@@ -1,0 +1,51 @@
+syntax="proto3";
+
+package pb;
+
+option go_package="./;pb";
+
+service Lenven{
+    rpc CreateBooking(CreateBookingParams) returns (CreateBookingResp){}
+    rpc GetBookings(GetBookingsReq) returns (GetBookingsResp){}
+    rpc GetBookingByID(GetBookingByIDReq) returns (GetBookingByIDResp){}
+    rpc CancelBooking(CancelBookingReq) returns (CancelBookingResp){}
+}
+
+message Booking{
+    string ID=1;
+    string roomID=2;
+    string userID=3;
+    int64 numPersons=4;
+    string fromDate=5;
+    string tillDate=6;
+    bool canceled=7;
+}
+
+message CreateBookingParams{
+    string fromDate =1;
+    string tillDate=2;
+    int64 numPersons =3;
+}
+
+message CreateBookingResp{
+    Booking bookingResult=1;
+}
+
+message GetBookingsReq{}
+message GetBookingsResp{
+ repeated Booking bookings=1;   
+}
+
+message GetBookingByIDReq{
+    string ID=1;
+}
+message GetBookingByIDResp{
+    Booking bookingResult=1;
+}
+
+message CancelBookingReq{
+   string ID=1;
+}
+message CancelBookingResp{
+    string msg=1;
+}
