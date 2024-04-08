@@ -56,7 +56,7 @@ func (b *BookingHandler) HandleCancelBooking(c *fiber.Ctx) error {
 		})
 	}
 	// now the question is how do we cancel the booking
-	if err := b.store.Booking.UpdateBooking(c.Context(), booking.ID.String(), bson.M{"canceled": true}); err != nil {
+	if err := b.store.Booking.UpdateBooking(c.Context(), id, bson.M{"canceled": true}); err != nil {
 		return err
 	}
 	return c.Status(http.StatusOK).JSON(fiber.Map{

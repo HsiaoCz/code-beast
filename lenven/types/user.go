@@ -3,6 +3,8 @@ package types
 import (
 	"fmt"
 	"regexp"
+
+	"golang.org/x/crypto/bcrypt"
 )
 
 const (
@@ -16,7 +18,7 @@ type User struct {
 	ID        string `bson:"_id" json:"id"`
 	Firstname string `bson:"first_name" json:"first_name"`
 	Lastname  string `bson:"last_name" json:"last_name"`
-	Password  string `bson:"password" json:"password"`
+	Password  string `bson:"password" json:"-"`
 	Email     string `bson:"email" json:"email"`
 	IsAdmin   bool   `bson:"isAdmin" json:"isAdmin"`
 }
@@ -47,4 +49,17 @@ func (params CreateUserParams) Validate() map[string]string {
 func isEmailValidate(e string) bool {
 	emailRegex := regexp.MustCompile(`^[a-z0-9._%+\-]+@[a-z0-9.\-]+.[a-z]{2,4}$`)
 	return emailRegex.MatchString(e)
+}
+
+func NewUserFromParams(params CreateUserParams) (*User, error) {
+	encpw, err := bcrypt.GenerateFromPassword([]byte(params.Password), bcryptCost)
+	if err != nil {
+		return nil, err
+	}
+	return &User{
+		Firstname: params.Firstname,
+		Lastname:  params.Lastname,
+		Email:     params.Email,
+		Password:  string(encpw),
+	}, nil
 }

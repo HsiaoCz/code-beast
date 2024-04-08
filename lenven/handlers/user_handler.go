@@ -26,5 +26,13 @@ func (u *UserHandler) CreateUser(c *fiber.Ctx) error {
 	if errorstr := params.Validate(); len(errorstr) != 0 {
 		return c.Status(http.StatusBadRequest).JSON(errorstr)
 	}
-	return nil
+	user, err := types.NewUserFromParams(params)
+	if err != nil {
+		return err
+	}
+	userresp, err := u.store.UserStore.CreateUser(c.Context(), user)
+	if err != nil {
+		return err
+	}
+	return c.Status(http.StatusOK).JSON(userresp)
 }
