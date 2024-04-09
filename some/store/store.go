@@ -1,3 +1,5 @@
 package store
 
-type Store struct{}
+type Store struct{
+	User UserStore
+}

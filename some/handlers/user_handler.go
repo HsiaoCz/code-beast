@@ -3,16 +3,20 @@ package handlers
 import (
 	"net/http"
 
+	"github.com/HsiaoCz/code-beast/some/store"
 	"github.com/HsiaoCz/code-beast/some/types"
 	"github.com/HsiaoCz/code-beast/some/utils"
 	"github.com/HsiaoCz/code-beast/some/views"
 )
 
 type UserHandler struct {
+	store *store.Store
 }
 
-func NewUserHandler() *UserHandler {
-	return &UserHandler{}
+func NewUserHandler(store *store.Store) *UserHandler {
+	return &UserHandler{
+		store: store,
+	}
 }
 
 func (u *UserHandler) HandleCreateUser(w http.ResponseWriter, r *http.Request) error {

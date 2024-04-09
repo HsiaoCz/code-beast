@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"sync"
+	"time"
 
 	"github.com/HsiaoCz/code-beast/hotel/api/middleware"
 	"github.com/HsiaoCz/code-beast/hotel/store"
@@ -15,13 +16,14 @@ import (
 )
 
 var (
-	client     *mongo.Client
-	roomStore  store.RoomStore
-	hotelStore store.HotelStore
-	ctx        = context.Background()
-	IsAdmin    = true
-	userStore  = store.NewMongoUserStore(client)
-	wg         = &sync.WaitGroup{}
+	client       *mongo.Client
+	roomStore    store.RoomStore
+	hotelStore   store.HotelStore
+	bookingStore store.BookingStore
+	ctx          = context.Background()
+	IsAdmin      = true
+	userStore    = store.NewMongoUserStore(client)
+	wg           = &sync.WaitGroup{}
 )
 
 func seedUser(email string, fname string, lname string, password string) {
@@ -92,6 +94,33 @@ func seedHotel(name string, location string, rating int) {
 	wg.Done()
 }
 
+func seedRoom(size string, ss bool, price float64, hotelID primitive.ObjectID) *types.Room {
+	room := &types.Room{
+		Size:    size,
+		Seaside: ss,
+		Price:   price,
+		HotelID: hotelID,
+	}
+	insertRoom, err := roomStore.InsertRoom(context.Background(), room)
+	if err != nil {
+		log.Fatal(err)
+	}
+	return insertRoom
+}
+
+func seedBooking(userID, roomID primitive.ObjectID, from, till time.Time) {
+	booking := &types.Booking{
+		UserID:   userID,
+		RoomID:   roomID,
+		FromDate: from,
+		TillDate: till,
+	}
+	_, err := bookingStore.InsertBooking(context.Background(), booking)
+	if err != nil {
+		log.Fatal(err)
+	}
+}
+
 func init() {
 	var err error
 	client, err = mongo.Connect(ctx, options.Client().ApplyURI(store.DBURI))
@@ -103,6 +132,8 @@ func init() {
 	}
 	hotelStore = store.NewMongoHotelStore(client)
 	roomStore = store.NewMongoRoomStore(client, hotelStore)
+	userStore = store.NewMongoUserStore(client)
+	bookingStore = store.NewMongoBookingStore(client)
 }
 
 func main() {
@@ -111,7 +142,8 @@ func main() {
 	go seedHotel("Bellucia", "France", 3)
 	go seedHotel("The cozy hotel", "The Nederlands", 4)
 	go seedHotel("Dont die in sleep", "london", 1)
-
+	seedRoom("small", true, 99.99, primitive.NewObjectID())
+	seedBooking(primitive.NewObjectID(), primitive.NewObjectID(), time.Now(), <-time.After(time.Hour*24))
 	go seedUser("gg@ggc.com", "lisis", "assms", "sjsjkajs")
 	wg.Wait()
 }
