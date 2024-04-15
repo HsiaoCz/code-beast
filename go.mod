@@ -13,6 +13,7 @@ require (
 	github.com/gorilla/websocket v1.5.1
 	github.com/hashicorp/consul/api v1.28.2
 	github.com/julienschmidt/httprouter v1.3.0
+	github.com/tidwall/resp v0.1.1
 	github.com/zeebo/assert v1.3.1
 	go.etcd.io/bbolt v1.3.9
 	go.mongodb.org/mongo-driver v1.14.0

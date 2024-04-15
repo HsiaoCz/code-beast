@@ -4,6 +4,8 @@ import (
 	"log/slog"
 	"net"
 
+	handlers "github.com/HsiaoCz/code-beast/kitchen/services/orders/handlers/orders"
+	"github.com/HsiaoCz/code-beast/kitchen/services/orders/service"
 	"google.golang.org/grpc"
 )
 
@@ -24,6 +26,10 @@ func (s *grpcServer) Run() error {
 		return err
 	}
 	gServer := grpc.NewServer()
+
+	// register our grpc services
+	orderService := service.NewOrderService()
+	handlers.NewOrderGrpcHandler(gServer, orderService)
 
 	slog.Info("Starting grpc server on", "the listen address", s.addr)
 
