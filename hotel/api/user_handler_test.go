@@ -2,45 +2,21 @@ package api
 
 import (
 	"bytes"
-	"context"
 	"encoding/json"
 	"fmt"
 	"net/http/httptest"
 	"testing"
 
-	"github.com/HsiaoCz/code-beast/hotel/store"
 	"github.com/HsiaoCz/code-beast/hotel/types"
 	"github.com/gofiber/fiber/v2"
-	"go.mongodb.org/mongo-driver/mongo"
-	"go.mongodb.org/mongo-driver/mongo/options"
 )
-
-type teststore struct {
-	store.UserStore
-}
-
-func setup(t *testing.T) *teststore {
-	client, err := mongo.Connect(context.TODO(), options.Client().ApplyURI(store.DBURI))
-	if err != nil {
-		t.Fatal(err)
-	}
-	return &teststore{
-		UserStore: store.NewMongoUserStore(client),
-	}
-}
-
-func (ts *teststore) teardown(t *testing.T) {
-	if err := ts.UserStore.Drop(context.TODO()); err != nil {
-		t.Fatal(err)
-	}
-}
 
 func TestPosUser(t *testing.T) {
 	tdb := setup(t)
 	defer tdb.teardown(t)
 
 	app := fiber.New()
-	userhandler := NewUserHandler(tdb.UserStore)
+	userhandler := NewUserHandler(tdb.store.User)
 	app.Post("/user", userhandler.HandlePostUser)
 
 	params := types.CreateUserParams{

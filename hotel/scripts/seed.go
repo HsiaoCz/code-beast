@@ -147,17 +147,26 @@ func main() {
 	userStore = store.NewMongoUserStore(client)
 	bookingStore = store.NewMongoBookingStore(client)
 
-	store := store.Store{
+	store := &store.Store{
 		User:    userStore,
 		Hotel:   hotelStore,
 		Room:    roomStore,
 		Booking: bookingStore,
 	}
 	user := fixtures.AddUser(store, "gg@gg.com", "final", "bob", false)
-	fmt.Println(user)
+	fmt.Println("final---->", user.ID)
+
+	admin := fixtures.AddUser(store, "admin@gg.com", "admin", "admin", true)
+	fmt.Println("admin----->", admin.ID)
 
 	hotel := fixtures.AddHotel(store, "some hotel", "bermude", 5, nil)
 	fmt.Println(hotel)
+
+	room := fixtures.AddRoom(store, "large", true, 88.44, hotel.ID)
+	fmt.Println(room)
+
+	booking := fixtures.AddBooking(store, user.ID, room.ID, time.Now(), time.Now().AddDate(0, 0, 5))
+	fmt.Println(booking)
 
 	seedHotel("Bellucia", "France", 3)
 	seedHotel("The cozy hotel", "The Nederlands", 4)
