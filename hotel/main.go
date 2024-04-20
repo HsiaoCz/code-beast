@@ -19,9 +19,11 @@ import (
 
 var config = fiber.Config{
 	ErrorHandler: func(c *fiber.Ctx, err error) error {
-		return c.Status(http.StatusInternalServerError).JSON(fiber.Map{
-			"error": err.Error(),
-		})
+		if apiError, ok := err.(api.Error); ok {
+			return c.Status(apiError.Code).JSON(apiError)
+		}
+		aerr := api.NewError(http.StatusInternalServerError, err.Error())
+		return c.Status(aerr.Code).JSON(aerr)
 	},
 }
 
