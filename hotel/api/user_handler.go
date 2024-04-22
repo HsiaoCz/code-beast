@@ -4,7 +4,6 @@ import (
 	"errors"
 	"net/http"
 
-	"github.com/HsiaoCz/code-beast/hotel/api/middleware"
 	"github.com/HsiaoCz/code-beast/hotel/store"
 	"github.com/HsiaoCz/code-beast/hotel/types"
 	"github.com/gofiber/fiber/v2"
@@ -101,7 +100,7 @@ func (h *UserHandler) HandleUserLogin(c *fiber.Ctx) error {
 	if err != nil {
 		return err
 	}
-	token, err := middleware.GenToken(user.ID, user.Email)
+	token, err := GenToken(user.ID, user.Email)
 	if err != nil {
 		return err
 	}

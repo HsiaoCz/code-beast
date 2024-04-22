@@ -6,7 +6,7 @@ import (
 	"log"
 	"time"
 
-	"github.com/HsiaoCz/code-beast/hotel/api/middleware"
+	"github.com/HsiaoCz/code-beast/hotel/api"
 	"github.com/HsiaoCz/code-beast/hotel/store"
 	"github.com/HsiaoCz/code-beast/hotel/store/fixtures"
 	"github.com/HsiaoCz/code-beast/hotel/types"
@@ -44,7 +44,7 @@ func seedUser(email string, fname string, lname string, password string) {
 	if err != nil {
 		log.Fatal(err)
 	}
-	token, err := middleware.GenToken(u.ID, u.Email)
+	token, err := api.GenToken(u.ID, u.Email)
 	if err != nil {
 		log.Fatal(err)
 	}

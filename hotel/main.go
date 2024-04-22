@@ -7,7 +7,6 @@ import (
 	"net/http"
 
 	"github.com/HsiaoCz/code-beast/hotel/api"
-	"github.com/HsiaoCz/code-beast/hotel/api/middleware"
 	"github.com/HsiaoCz/code-beast/hotel/store"
 	"github.com/gofiber/fiber/v2"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -80,25 +79,25 @@ func main() {
 	{
 		// router
 		// user
-		v1.Get("/user", middleware.JWTAuthMiddleware(), userHander.HandleGetUsers)
-		v1.Get("/user/:id", middleware.JWTAuthMiddleware(), userHander.HandleGetUser)
+		v1.Get("/user", api.JWTAuthMiddleware(), userHander.HandleGetUsers)
+		v1.Get("/user/:id", api.JWTAuthMiddleware(), userHander.HandleGetUser)
 		v1.Post("/user", userHander.HandlePostUser)
 		v1.Post("/user/login", userHander.HandleUserLogin)
-		v1.Delete("/user/:id", middleware.JWTAuthMiddleware(), userHander.HandleDeleteUser)
-		v1.Put("/user/:id", middleware.JWTAuthMiddleware(), userHander.HandlePutUser)
+		v1.Delete("/user/:id", api.JWTAuthMiddleware(), userHander.HandleDeleteUser)
+		v1.Put("/user/:id", api.JWTAuthMiddleware(), userHander.HandlePutUser)
 
 		// hotel router
-		v1.Get("/hotel", middleware.JWTAuthMiddleware(), hotelHandler.HandleGetHotels)
-		v1.Get("/hotel/:id", middleware.JWTAuthMiddleware(), hotelHandler.HandleGetHotelByID)
-		v1.Get("/hotel/:id/rooms", middleware.JWTAuthMiddleware(), hotelHandler.HandleGetRooms)
+		v1.Get("/hotel", api.JWTAuthMiddleware(), hotelHandler.HandleGetHotels)
+		v1.Get("/hotel/:id", api.JWTAuthMiddleware(), hotelHandler.HandleGetHotelByID)
+		v1.Get("/hotel/:id/rooms", api.JWTAuthMiddleware(), hotelHandler.HandleGetRooms)
 
 		// room
-		v1.Post("/room/:id/book", middleware.JWTAuthMiddleware(), roomHandler.HandleBookRoom)
-		v1.Get("/room", middleware.JWTAuthMiddleware(), roomHandler.HandleGetRooms)
+		v1.Post("/room/:id/book", api.JWTAuthMiddleware(), roomHandler.HandleBookRoom)
+		v1.Get("/room", api.JWTAuthMiddleware(), roomHandler.HandleGetRooms)
 
 		// bookings handlers
-		admin.Get("/booking", middleware.JWTAuthMiddleware(), bookingHandler.HandleGetBookings)
-		v1.Get("/booking/:id", middleware.JWTAuthMiddleware(), bookingHandler.HandleGetBooking)
+		admin.Get("/booking", api.JWTAuthMiddleware(), bookingHandler.HandleGetBookings)
+		v1.Get("/booking/:id", api.JWTAuthMiddleware(), bookingHandler.HandleGetBooking)
 	}
 	app.Listen(*listenAddr)
 }
