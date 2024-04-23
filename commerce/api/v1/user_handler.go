@@ -1,7 +1,6 @@
 package v1
 
 import (
-	"encoding/json"
 	"log/slog"
 	"net/http"
 
@@ -18,11 +17,11 @@ func NewUserHandlerV1(store *db.Store) *UserHandelrV1 {
 	}
 }
 
-func (u *UserHandelrV1) HandleGetUsers(w http.ResponseWriter, r *http.Request) {
+func (u *UserHandelrV1) HandleGetUsers(w http.ResponseWriter, r *http.Request) error {
 	users, err := u.store.User.GetUsers(r.Context())
 	if err != nil {
 		slog.Error("get user from the db error", "err", err)
-		return
+		return err
 	}
-	json.NewEncoder(w).Encode(users)
+	return WriteJSON(w, http.StatusOK, users)
 }
