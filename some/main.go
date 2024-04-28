@@ -11,6 +11,8 @@ import (
 	"github.com/HsiaoCz/code-beast/some/handlers"
 	"github.com/HsiaoCz/code-beast/some/store"
 	"github.com/HsiaoCz/code-beast/some/utils"
+	"github.com/go-chi/chi/v5"
+	"github.com/go-chi/chi/v5/middleware"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
@@ -27,10 +29,12 @@ func main() {
 		userStore = store.NewMongoStore(client)
 		store     = &store.Store{User: userStore}
 	)
-	router := http.NewServeMux()
+	router := chi.NewMux()
+	router.Use(middleware.Logger)
+	router.Use(middleware.Recoverer)
 	userHandler := handlers.NewUserHandler(store)
-	router.HandleFunc("POST /user/create", utils.TransferHandler(userHandler.HandleCreateUser))
-	router.HandleFunc("GET /user/show", utils.TransferHandler(userHandler.HandleShowUser))
+	router.Post("/user/create", utils.TransferHandler(userHandler.HandleCreateUser))
+	router.Get("/user/show", utils.TransferHandler(userHandler.HandleShowUser))
 	server := &http.Server{
 		Addr:         *listenAddr,
 		ReadTimeout:  time.Millisecond * 1500,
