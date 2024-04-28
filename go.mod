@@ -6,12 +6,14 @@ require (
 	github.com/a-h/templ v0.2.639
 	github.com/anthdm/hollywood v0.0.0-20240115210651-dd34702ee21f
 	github.com/confluentinc/confluent-kafka-go v1.9.2
+	github.com/go-chi/chi/v5 v5.0.12
 	github.com/gofiber/fiber/v2 v2.52.3
 	github.com/golang-jwt/jwt v3.2.2+incompatible
 	github.com/google/uuid v1.6.0
 	github.com/gorilla/mux v1.8.1
 	github.com/gorilla/websocket v1.5.1
 	github.com/hashicorp/consul/api v1.28.2
+	github.com/joho/godotenv v1.5.1
 	github.com/julienschmidt/httprouter v1.3.0
 	github.com/tidwall/resp v0.1.1
 	github.com/zeebo/assert v1.3.1
