@@ -2,8 +2,8 @@ package main
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
-	"io"
 	"log"
 	"log/slog"
 	"net/http"
@@ -30,7 +30,7 @@ func main() {
 		}
 	)
 
-	router.HandleFunc("POST /data", HandleData)
+	router.HandleFunc("/data", HandleData)
 
 	slog.Info("the http server is running on", "port", port)
 
@@ -53,12 +53,37 @@ func main() {
 	}
 }
 
+// we dont need this shit anymore
+
+// func HandleSlash(w http.ResponseWriter, r *http.Request) {
+// 	// Set CORS headers
+// 	w.Header().Set("Access-Control-Allow-Origin", "*")
+// 	w.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
+// 	w.Header().Set("Access-Control-Allow-Headers", "Content-Type, Authorization")
+
+// 	// If it's a preflight request, respond with 200 OK
+// 	if r.Method == "OPTIONS" {
+// 		w.WriteHeader(http.StatusOK)
+// 		return
+// 	}
+
+// 	// handler logic goes here
+// 	w.Write([]byte("Hello,CORS!"))
+// }
+
 func HandleData(w http.ResponseWriter, r *http.Request) {
-	b, err := io.ReadAll(r.Body)
-	if err != nil {
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
+	w.Header().Set("Access-Control-Allow-Headers", "Content-Type, Authorization")
+	if r.Method == "OPTIONS" {
+		w.WriteHeader(http.StatusOK)
+		return
+	}
+
+	var data Data
+
+	if err := json.NewDecoder(r.Body).Decode(&data); err != nil {
 		log.Fatal(err)
 	}
-	defer r.Body.Close()
-
-	fmt.Println(string(b))
+	fmt.Printf("%+v", data)
 }
