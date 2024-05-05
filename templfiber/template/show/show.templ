@@ -1,0 +1,14 @@
+package show
+
+import (
+	"github.com/HsiaoCz/code-beast/templfiber/data"
+	"github.com/HsiaoCz/code-beast/templfiber/template/layout"
+)
+
+templ Show(user data.User) {
+	@layout.Base() {
+		<div>
+			Hello: { user.Username } Your { user.Email }
+		</div>
+	}
+}
