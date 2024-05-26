@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"fmt"
 	"log"
 
 	"github.com/HsiaoCz/code-beast/babyou/db"
@@ -30,7 +29,6 @@ func main() {
 		store          = &db.Store{User: mongoUserStore}
 		userHandler    = handlers.NewUserHandler(store)
 	)
-	fmt.Printf("%+v", client)
 	app := fiber.New()
 
 	app.Post("/user/create", userHandler.HandleCreateUser)

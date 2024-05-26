@@ -2,6 +2,7 @@ package db
 
 import (
 	"context"
+	"errors"
 
 	"github.com/HsiaoCz/code-beast/babyou/types"
 	"go.mongodb.org/mongo-driver/bson"
@@ -26,9 +27,10 @@ func NewMongoUserStore(client *mongo.Client, dbname string, coll string) *MongoU
 }
 
 func (mu *MongoUserStore) CreateUser(ctx context.Context, user *types.User) (*types.User, error) {
-	_, err := mu.coll.Find(ctx, bson.M{"email": user.Email})
+	filter := bson.D{{Key: "emial", Value: user.Email}}
+	_, err := mu.coll.Find(ctx, filter)
 	if err == nil {
-		return nil, err
+		return nil, errors.New("create user failed because the user created")
 	}
 	result, err := mu.coll.InsertOne(ctx, user)
 	if err != nil {
