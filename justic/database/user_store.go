@@ -24,5 +24,6 @@ func NewMongoUserStore(client *mongo.Client, coll *mongo.Collection) *MongoUserS
 }
 
 func (m *MongoUserStore) CreateUser(ctx context.Context, user *datastruction.User) (*datastruction.User, error) {
+	
 	return nil, nil
 }
