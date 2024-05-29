@@ -27,10 +27,14 @@ func NewMongoUserStore(client *mongo.Client, dbname string, coll string) *MongoU
 }
 
 func (mu *MongoUserStore) CreateUser(ctx context.Context, user *types.User) (*types.User, error) {
-	filter := bson.D{{Key: "emial", Value: user.Email}}
-	_, err := mu.coll.Find(ctx, filter)
-	if err == nil {
-		return nil, errors.New("create user failed because the user created")
+	// filter := bson.D{{Key: "emial", Value: user.Email}}
+	// _, err := mu.coll.Find(ctx, filter)
+	// if err == nil {
+	// 	return nil, errors.New("create user failed because the user created")
+	// }
+	filter := bson.D{{Key: "email", Value: user.Email}}
+	if err := mu.coll.FindOne(ctx, filter).Decode(&types.User{}); err != mongo.ErrNoDocuments {
+		return nil, errors.New("create user faild because the user created")
 	}
 	result, err := mu.coll.InsertOne(ctx, user)
 	if err != nil {

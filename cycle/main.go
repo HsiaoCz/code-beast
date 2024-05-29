@@ -43,6 +43,7 @@ func main() {
 	router := http.NewServeMux()
 
 	router.HandleFunc("POST /user", handlers.TransferHandlerFunc(userHandler.HandleCreateUser))
+	router.HandleFunc("GET /user", handlers.TransferHandlerFunc(userHandler.HandleGetUserByID))
 
 	srv := http.Server{
 		Handler:      router,

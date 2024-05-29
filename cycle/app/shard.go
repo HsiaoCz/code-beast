@@ -6,6 +6,14 @@ import (
 	"net/http"
 )
 
+type H map[string]any
+
+func WriteJSON(w http.ResponseWriter, code int, v any) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(code)
+	return json.NewEncoder(w).Encode(v)
+}
+
 type APIError struct {
 	Status int    `json:"status"`
 	Msg    string `json:"msg"`
@@ -40,12 +48,4 @@ func TransferHandlerFunc(h HandlerFunc) http.HandlerFunc {
 		}
 		slog.Info("new request coming", "method", r.Method, "code", status.Code, "path", r.URL.Path, "remote address", r.RemoteAddr)
 	}
-}
-
-type H map[string]any
-
-func WriteJSON(w http.ResponseWriter, code int, v any) error {
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(code)
-	return json.NewEncoder(w).Encode(v)
 }
