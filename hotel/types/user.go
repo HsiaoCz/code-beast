@@ -94,3 +94,10 @@ type UserLoginResponse struct {
 	LastName  string             `bson:"lastName" json:"lastName"`
 	Email     string             `bson:"email" json:"email"`
 }
+
+// user infomation to context
+type UserInfo struct {
+	UserID  primitive.ObjectID
+	Email   string // maybe we don't need this field but ...
+	IsAdmin bool
+}

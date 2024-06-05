@@ -31,15 +31,15 @@ func (r *RoomHandler) HandleBookRoom(c *fiber.Ctx) error {
 	if err != nil {
 		return err
 	}
-	userID, ok := c.Context().Value("userID").(primitive.ObjectID)
+	userInfo, ok := c.Context().Value(CtxUserInfo).(*types.UserInfo)
 	if !ok {
 		return c.Status(http.StatusInternalServerError).JSON(fiber.Map{
 			"type":    "error",
-			"message": "internal server error",
+			"message": "user unlogin",
 		})
 	}
 	booking := &types.Booking{
-		UserID:     userID,
+		UserID:     userInfo.UserID,
 		RoomID:     roomID,
 		NumPersons: params.NumPersons,
 	}

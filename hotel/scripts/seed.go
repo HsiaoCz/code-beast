@@ -44,7 +44,7 @@ func seedUser(email string, fname string, lname string, password string) {
 	if err != nil {
 		log.Fatal(err)
 	}
-	token, err := api.GenToken(u.ID, u.Email)
+	token, err := api.GenToken(u.ID, u.Email, user.IsAdmin)
 	if err != nil {
 		log.Fatal(err)
 	}

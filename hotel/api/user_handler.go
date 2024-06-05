@@ -100,7 +100,7 @@ func (h *UserHandler) HandleUserLogin(c *fiber.Ctx) error {
 	if err != nil {
 		return err
 	}
-	token, err := GenToken(user.ID, user.Email)
+	token, err := GenToken(user.ID, user.Email, user.IsAdmin)
 	if err != nil {
 		return err
 	}

@@ -15,6 +15,7 @@ require (
 	github.com/hashicorp/consul/api v1.28.2
 	github.com/joho/godotenv v1.5.1
 	github.com/julienschmidt/httprouter v1.3.0
+	github.com/qiniu/qmgo v1.1.8
 	github.com/tidwall/resp v0.1.1
 	github.com/zeebo/assert v1.3.1
 	go.etcd.io/bbolt v1.3.10
@@ -52,7 +53,6 @@ require (
 	github.com/mitchellh/go-homedir v1.1.0 // indirect
 	github.com/mitchellh/mapstructure v1.5.0 // indirect
 	github.com/montanaflynn/stats v0.7.1 // indirect
-	github.com/qiniu/qmgo v1.1.8 // indirect
 	github.com/rivo/uniseg v0.2.0 // indirect
 	github.com/valyala/bytebufferpool v1.0.0 // indirect
 	github.com/valyala/fasthttp v1.51.0 // indirect

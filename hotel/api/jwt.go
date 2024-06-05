@@ -15,8 +15,9 @@ import (
 // 如果想要保存更多信息，都可以添加到这个结构体中
 type myClaims struct {
 	// 可根据需要自行添加字段
-	UserID primitive.ObjectID `json:"userID"`
-	Email  string             `json:"email"`
+	UserID  primitive.ObjectID `json:"userID"`
+	Email   string             `json:"email"`
+	IsAdmin bool               `json:"isAdmin"`
 	jwt.StandardClaims
 }
 
@@ -26,11 +27,12 @@ const TokenExpirDuration = time.Hour * 24 * 3
 var mySecret = []byte("little fan")
 
 // GenToken 生成JWT
-func GenToken(userID primitive.ObjectID, email string) (token string, err error) {
+func GenToken(userID primitive.ObjectID, email string, isAdmin bool) (token string, err error) {
 	// 创建一个我们自己的声明数据
 	claims := myClaims{
 		userID,
 		email,
+		isAdmin,
 		jwt.StandardClaims{
 			ExpiresAt: time.Now().Add(TokenExpirDuration).Unix(),
 			Issuer:    "hotel-hsiaol1", // 签发人
