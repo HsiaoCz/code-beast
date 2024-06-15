@@ -6,3 +6,7 @@ type ArithmeicPort interface {
 	Multiplication(a int32, b int32) (int32, error)
 	Division(a int32, b int32) (int32, error)
 }
+
+type SetSome struct{
+	
+}
