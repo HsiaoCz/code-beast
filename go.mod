@@ -16,6 +16,7 @@ require (
 	github.com/joho/godotenv v1.5.1
 	github.com/julienschmidt/httprouter v1.3.0
 	github.com/qiniu/qmgo v1.1.8
+	github.com/sirupsen/logrus v1.4.2
 	github.com/tidwall/resp v0.1.1
 	github.com/zeebo/assert v1.3.1
 	go.etcd.io/bbolt v1.3.10
@@ -46,6 +47,7 @@ require (
 	github.com/hashicorp/serf v0.10.1 // indirect
 	github.com/klauspost/compress v1.17.8 // indirect
 	github.com/klauspost/cpuid/v2 v2.0.9 // indirect
+	github.com/konsorten/go-windows-terminal-sequences v1.0.1 // indirect
 	github.com/leodido/go-urn v1.4.0 // indirect
 	github.com/mattn/go-colorable v0.1.13 // indirect
 	github.com/mattn/go-isatty v0.0.20 // indirect
