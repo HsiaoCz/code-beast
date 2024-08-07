@@ -1,0 +1,12 @@
+package userv
+
+import (
+	"github.com/HsiaoCz/code-beast/crazy/templs/models"
+	"github.com/HsiaoCz/code-beast/crazy/templs/views/layout"
+)
+
+templ UserShow(user models.User) {
+	@layout.Base() {
+		<h1>Hello { user.Username } Your Email { user.Email }</h1>
+	}
+}

@@ -3,7 +3,7 @@ module github.com/HsiaoCz/code-beast
 go 1.22.2
 
 require (
-	github.com/a-h/templ v0.2.680
+	github.com/a-h/templ v0.2.747
 	github.com/anthdm/hollywood v0.0.0-20240115210651-dd34702ee21f
 	github.com/confluentinc/confluent-kafka-go v1.9.2
 	github.com/go-chi/chi/v5 v5.0.12
@@ -66,7 +66,7 @@ require (
 	github.com/zeebo/xxh3 v1.0.2 // indirect
 	golang.org/x/exp v0.0.0-20231226003508-02704c960a9b // indirect
 	golang.org/x/sync v0.7.0 // indirect
-	golang.org/x/sys v0.20.0 // indirect
+	golang.org/x/sys v0.21.0 // indirect
 	golang.org/x/text v0.15.0 // indirect
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20240227224415-6ceb2ff114de // indirect
 )
