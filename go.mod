@@ -5,6 +5,7 @@ go 1.22.2
 require (
 	github.com/a-h/templ v0.2.747
 	github.com/anthdm/hollywood v0.0.0-20240115210651-dd34702ee21f
+	github.com/anthdm/superkit v0.0.0-20240701091803-e7f8e0aad3e9
 	github.com/confluentinc/confluent-kafka-go v1.9.2
 	github.com/go-chi/chi/v5 v5.0.12
 	github.com/gofiber/fiber/v2 v2.52.4
@@ -25,6 +26,8 @@ require (
 	golang.org/x/net v0.25.0
 	google.golang.org/grpc v1.63.2
 	google.golang.org/protobuf v1.34.1
+	gorm.io/driver/sqlite v1.5.6
+	gorm.io/gorm v1.25.11
 )
 
 require (
@@ -45,6 +48,8 @@ require (
 	github.com/hashicorp/go-rootcerts v1.0.2 // indirect
 	github.com/hashicorp/golang-lru v0.5.4 // indirect
 	github.com/hashicorp/serf v0.10.1 // indirect
+	github.com/jinzhu/inflection v1.0.0 // indirect
+	github.com/jinzhu/now v1.1.5 // indirect
 	github.com/klauspost/compress v1.17.8 // indirect
 	github.com/klauspost/cpuid/v2 v2.0.9 // indirect
 	github.com/konsorten/go-windows-terminal-sequences v1.0.1 // indirect
@@ -52,6 +57,7 @@ require (
 	github.com/mattn/go-colorable v0.1.13 // indirect
 	github.com/mattn/go-isatty v0.0.20 // indirect
 	github.com/mattn/go-runewidth v0.0.15 // indirect
+	github.com/mattn/go-sqlite3 v1.14.22 // indirect
 	github.com/mitchellh/go-homedir v1.1.0 // indirect
 	github.com/mitchellh/mapstructure v1.5.0 // indirect
 	github.com/montanaflynn/stats v0.7.1 // indirect
