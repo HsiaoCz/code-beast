@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/HsiaoCz/code-beast/crazy/methods/types"
+	"github.com/sirupsen/logrus"
 	"gorm.io/gorm"
 )
 
@@ -23,7 +24,14 @@ func UserCaseInit(db *gorm.DB) *UserCase {
 }
 
 func (u *UserCase) CreateUser(ctx context.Context, user *types.User) (*types.User, error) {
-	return nil, nil
+	tx := u.db.WithContext(ctx).Debug().Model(&types.User{}).Create(user)
+	if tx.Error != nil {
+		return nil, tx.Error
+	}
+	logrus.WithFields(logrus.Fields{
+		"RequestID": ctx.Value(types.CtxRequestIDKey).(int64),
+	}).Info("create user request")
+	return user, nil
 }
 
 func (u *UserCase) GetUserByID(ctx context.Context, id string) (*types.User, error) {

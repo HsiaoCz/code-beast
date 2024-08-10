@@ -5,6 +5,8 @@ import (
 	"net/http"
 	"os"
 
+	"github.com/HsiaoCz/code-beast/crazy/methods/dao"
+	"github.com/HsiaoCz/code-beast/crazy/methods/db"
 	"github.com/HsiaoCz/code-beast/crazy/methods/handlers"
 	"github.com/joho/godotenv"
 	"github.com/sirupsen/logrus"
@@ -14,12 +16,16 @@ func main() {
 	if err := godotenv.Load(); err != nil {
 		log.Fatal(err)
 	}
+	if err := db.InitDB(); err != nil {
+		log.Fatal(err)
+	}
 	logrus.SetLevel(logrus.DebugLevel)
 	logrus.SetFormatter(&logrus.TextFormatter{FullTimestamp: true})
 
 	var (
 		port        = os.Getenv("PORT")
-		userHandler = &handlers.UserHandlers{}
+		userCase    = dao.UserCaseInit(db.Get())
+		userHandler = handlers.UserHandlersInit(userCase)
 		router      = http.NewServeMux()
 	)
 
