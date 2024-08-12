@@ -35,5 +35,13 @@ func (u *UserCase) CreateUser(ctx context.Context, user *types.User) (*types.Use
 }
 
 func (u *UserCase) GetUserByID(ctx context.Context, id string) (*types.User, error) {
-	return nil, nil
+	var user types.User
+	tx := u.db.WithContext(ctx).Debug().Model(&types.User{}).Find(&user, "user_id = ?", id)
+	if tx.Error != nil {
+		return nil, tx.Error
+	}
+	logrus.WithFields(logrus.Fields{
+		"RequestID": ctx.Value(types.CtxRequestIDKey).(int64),
+	}).Info("get user by user_id request")
+	return &user, nil
 }
