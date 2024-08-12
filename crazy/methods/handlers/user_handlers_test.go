@@ -1,5 +1,13 @@
 package handlers
 
-import "testing"
+import (
+	"testing"
 
-func TestHandlerCreateUser(t *testing.T) {}
+	"github.com/joho/godotenv"
+)
+
+func TestHandlerCreateUser(t *testing.T) {
+	if err := godotenv.Load("../.env"); err != nil {
+		t.Fatal(err)
+	}
+}

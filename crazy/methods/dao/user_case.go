@@ -11,6 +11,7 @@ import (
 type UserCaser interface {
 	CreateUser(context.Context, *types.User) (*types.User, error)
 	GetUserByID(context.Context, string) (*types.User, error)
+	DeleteUserByID(context.Context, string) error
 }
 
 type UserCase struct {
@@ -44,4 +45,9 @@ func (u *UserCase) GetUserByID(ctx context.Context, id string) (*types.User, err
 		"RequestID": ctx.Value(types.CtxRequestIDKey).(int64),
 	}).Info("get user by user_id request")
 	return &user, nil
+}
+
+func (u *UserCase) DeleteUserByID(ctx context.Context, id string) error {
+	tx := u.db.WithContext(ctx).Debug().Where("user_id = ?", id).Delete(&types.User{})
+	return tx.Error
 }
