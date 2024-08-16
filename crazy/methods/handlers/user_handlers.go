@@ -9,12 +9,14 @@ import (
 )
 
 type UserHandlers struct {
-	user dao.UserCaser
+	user    dao.UserCaser
+	session dao.SessionCaser
 }
 
-func UserHandlersInit(user dao.UserCaser) *UserHandlers {
+func UserHandlersInit(user dao.UserCaser, session dao.SessionCaser) *UserHandlers {
 	return &UserHandlers{
-		user: user,
+		user:    user,
+		session: session,
 	}
 }
 

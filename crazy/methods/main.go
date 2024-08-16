@@ -25,7 +25,8 @@ func main() {
 	var (
 		port        = os.Getenv("PORT")
 		userCase    = dao.UserCaseInit(db.Get())
-		userHandler = handlers.UserHandlersInit(userCase)
+		sessionCase = dao.SessionCaseInit(db.Get())
+		userHandler = handlers.UserHandlersInit(userCase, sessionCase)
 		router      = http.NewServeMux()
 	)
 
