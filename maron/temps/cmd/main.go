@@ -1,10 +1,13 @@
 package main
 
-import "github.com/gofiber/fiber/v2"
+import (
+	"github.com/HsiaoCz/code-beast/maron/temps/handlers"
+	"github.com/gofiber/fiber/v2"
+)
 
 func main() {
 	app := fiber.New()
-
-	app.Get("/user")
+	userHandler := &handlers.UserHandler{}
+	app.Get("/user", userHandler.HandleUserShow)
 	app.Listen(":3001")
 }

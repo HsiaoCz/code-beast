@@ -1,0 +1,12 @@
+package userv
+
+import (
+	"github.com/HsiaoCz/code-beast/gohtt/view/layout"
+	"github.com/HsiaoCz/code-beast/maron/temps/types"
+)
+
+templ UserShow(user types.User) {
+	@layout.Base() {
+		<h1>Hello { user.Username } Your email { user.Email }</h1>
+	}
+}
