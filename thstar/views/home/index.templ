@@ -1,6 +1,9 @@
 package home
 
-import "github.com/HsiaoCz/code-beast/thstar/views/layout"
+import (
+	"github.com/HsiaoCz/code-beast/thstar/types"
+	"github.com/HsiaoCz/code-beast/thstar/views/layout"
+)
 
 templ Home() {
 	@layout.Base() {
@@ -8,6 +11,14 @@ templ Home() {
 			<div class="text-x1 border border-red-400 text-blue-500 font-bold">
 				Home Page
 			</div>
+		</div>
+	}
+}
+
+templ UserShow(user types.User) {
+	@layout.Base() {
+		<div class="flex flex-col">
+			Hello { user.Username },Your email { user.Email }
 		</div>
 	}
 }
