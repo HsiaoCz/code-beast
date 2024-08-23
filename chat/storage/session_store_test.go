@@ -1,5 +1,13 @@
 package storage
 
-import "testing"
+import (
+	"testing"
 
-func TestCreateSessions(t *testing.T) {}
+	"github.com/joho/godotenv"
+)
+
+func TestCreateSessions(t *testing.T) {
+	if err := godotenv.Load("../.env"); err != nil {
+		t.Fatal(err)
+	}
+}
