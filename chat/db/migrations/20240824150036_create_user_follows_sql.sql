@@ -1,8 +1,9 @@
 -- +goose Up
-CREATE TABLE IF NOT EXISTS users();
 -- +goose StatementBegin
+SELECT 'up SQL query';
 -- +goose StatementEnd
+
 -- +goose Down
-DROP TABLE IF EXISTS users;
 -- +goose StatementBegin
+SELECT 'down SQL query';
 -- +goose StatementEnd
