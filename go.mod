@@ -18,6 +18,7 @@ require (
 	github.com/joho/godotenv v1.5.1
 	github.com/julienschmidt/httprouter v1.3.0
 	github.com/qiniu/qmgo v1.1.8
+	github.com/robfig/cron/v3 v3.0.1
 	github.com/sirupsen/logrus v1.4.2
 	github.com/tidwall/resp v0.1.1
 	github.com/zeebo/assert v1.3.1
